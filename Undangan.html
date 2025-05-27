@@ -1,0 +1,16 @@
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const id = urlParams.get("id");
+
+fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?id=" + id)
+  .then(res => res.json())
+  .then(data => {
+    if (!data.attended) {
+      document.body.innerHTML = `<h3>Silakan tunjukkan QR ini ke petugas</h3><img src="https://api.qrserver.com/v1/create-qr-code/?data=${id}&size=150x150">`;
+    } else if (!data.pesanKesan) {
+      window.location.href = `/pesan.html?id=${id}`;
+    } else {
+      window.location.href = `/selesai.html`;
+    }
+  });
+</script>

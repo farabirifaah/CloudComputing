@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login Buku Tamu</title>
+</head>
+<body>
+  <h2>Form Input Tamu</h2>
+  <form id="formTamu">
+    <input type="text" name="nama" placeholder="Nama Tamu" required><br>
+    <input type="text" name="kelas" placeholder="Kelas" required><br>
+    <input type="text" name="nohp" placeholder="Nomor HP" required><br>
+    <input type="email" name="email" placeholder="Email" required><br>
+    <button type="submit">Simpan</button>
+  </form>
+
+  <h2>Daftar Undangan</h2>
+  <table border="1" id="tabelUndangan">
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>Nama</th>
+        <th>Kelas</th>
+        <th>No HP</th>
+        <th>Email</th>
+        <th>link whatsapp</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data akan dimuat di sini -->
+    </tbody>
+  </table>
+
+  <script>
+    const endpoint = "https://script.google.com/macros/s/AKfycbx3aJjIj_uYKuTP9D_gyn-BtO8p813yiYUQK4iLt9tvTS8AoYrRlqq-OScRmtf26lbE/exec";
+
+    // POST data
+    document.getElementById("formTamu").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const data = {
+        nama: this.nama.value,
+        kelas: this.kelas.value,
+        nohp: this.nohp.value,
+        email: this.email.value
+      };
+      fetch(endpoint, {
+        method: "POST",
+        body: JSON.stringify(data)
+      })
+      .then(res => res.text())
+      .then(response => {
+        alert(response);
+        this.reset();
+        loadData(); // refresh tabel setelah submit
+      });
+    });
+
+    // GET data
+    function loadData() {
+      fetch(endpoint)
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.querySelector("#tabelUndangan tbody");
+          tbody.innerHTML = "";
+          data.forEach(row => {
+            const tr = document.createElement("tr");
+            console.log(row);
+            tr.innerHTML = `
+              <td>${row.timestamp}</td>
+              <td>${row.namatamu}</td>
+              <td>${row.kelas}</td>
+              <td>${row.nohp}</td>
+              <td>${row.email}</td>
+              <td><a target="_blank" href="${row.walink}">whatsapp</a></td>
+            `;
+            tbody.appendChild(tr);
+          });
+        });
+    }
+
+    // Load data saat halaman dibuka
+    loadData();
+  </script>
+</body>
+</html>
